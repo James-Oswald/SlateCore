@@ -92,6 +92,7 @@ struct Formula{
     /** @name Internal Representation */
     ///@{
 
+    //Formula is a tagged union
     Type type;                      ///< The type of the formula
     ConnectiveType connectiveType;  ///< The connective class of the formula
     union{
@@ -285,3 +286,7 @@ Formula* If(Formula* left, Formula* right);
 Formula* Iff(Formula* left, Formula* right);
 Formula* Forall(std::string varName, Formula* arg);
 Formula* Exists(std::string varName, Formula* arg);
+
+std::string toSExpression(Term* formula);
+std::string toSExpression(Formula* formula);
+std::string toFirstOrderTPTP(std::string name, std::string type, Formula* formula);

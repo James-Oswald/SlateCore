@@ -1,9 +1,14 @@
 {
     "cSpell.words": [
+        "biconditional",
         "Elim",
+        "idents",
         "Subformula",
         "subformulae",
-        "Subterm"
+        "Subterm",
+        "tokenizes",
+        "tparam",
+        "TPTP"
     ],
     "files.associations": {
         "cctype": "cpp",
@@ -56,5 +61,6 @@
         "typeinfo": "cpp",
         "set": "cpp"
     },
-    "C_Cpp.default.cppStandard": "gnu++20"
+    "C_Cpp.default.cppStandard": "gnu++20",
+    "editor.rulers": [80]
 }
