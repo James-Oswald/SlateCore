@@ -6,6 +6,7 @@
 
 #include"Term.hpp"
 
+//Forward declare Formula for using defs
 class Formula;
 
 /**
@@ -16,12 +17,12 @@ using FormulaList = std::list<Formula*>;
 /** 
  * @brief Represents a formulae with a truth value.
  * @details The formula is represented as tree. 
- * it has both a high level ConnectiveType representing its internal representation 
- * and an exact Type representing its connective.  
+ * it has both a high level ConnectiveType representing its internal
+ * representation and an exact Type representing its connective.  
 */
 struct Formula{
 
-    //Inner Enums / Structs ============================================================================================
+    //Inner Enums / Structs ====================================================
     /** @name Inner Enums / Structs */
     ///@{
     /**
@@ -52,10 +53,15 @@ struct Formula{
         std::string name;       ///< the identifier for this predicate.
         TermList args;          ///< the list of arguments to this predicate.
 
-        /** @brief gets A list of pointers to all constants (and possible bound variables) inside the predicate. */
+        /** 
+         * @brief gets A list of pointers to all constants (and possible bound
+         * variables) inside the predicate. 
+         */
         TermList allConstants() const;
 
-        /** @brief gets A list of pointers to all functions (and possible function variables) inside the predicate. */
+        /** @brief gets A list of pointers to all functions 
+         * (and possible function variables) inside the predicate. 
+         */
         TermList allFunctions() const;
 
         /** @return max height of terms inside the predicate. */

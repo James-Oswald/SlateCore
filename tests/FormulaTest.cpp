@@ -1,8 +1,8 @@
-#include <Formula.hpp>
-
 #include<iostream>
 #include<memory>
 #include<cassert>
+
+#include "Formula.hpp"
 
 //For the sake of testing
 using pFormula = std::unique_ptr<Formula>;
