@@ -47,7 +47,6 @@ TermList Term::subconstants() const{
     return rv;
 }
 
-
 void inOrderConstantTraversal(Term* base, TermList& constants){
     for(Term* arg : base->args){
         if(arg->args.size() == 0){
@@ -114,7 +113,7 @@ std::unordered_set<std::string> Term::identifiers() const{
     return rv;
 }
 
-// Construction Helpers ================================================================================================
+// Construction Helpers ========================================================
 
 Term* Var(std::string name){
     Term* rv = new Term;

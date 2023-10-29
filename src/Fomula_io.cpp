@@ -111,19 +111,7 @@ std::string toSExpression(Term* term){
     }
 }
 
-using TypeStringMap = std::unordered_map<Formula::Type, std::string>;
-const TypeStringMap typeStringMap = {
-    {Formula::Type::PRED, "Pred"},       
-    {Formula::Type::NOT, "Not"},          
-    {Formula::Type::AND, "And"},           
-    {Formula::Type::OR, "Or"},            
-    {Formula::Type::IF, "If"},            
-    {Formula::Type::IFF, "Iff"},           
-    {Formula::Type::FORALL, "Forall"},        
-    {Formula::Type::EXISTS, "Exists"},        
-};
-
-std::string toSExpression(Formula* formula){
+std::string toSExpression(const Formula* formula){
     switch(formula->type)
     {
         case Formula::Type::PRED:{
@@ -135,8 +123,8 @@ std::string toSExpression(Formula* formula){
         }    
         default:{
             //If the formula is a valid type, use its type string as its operator, else use "???"
-            TypeStringMap::const_iterator itr = typeStringMap.find(formula->type);
-            std::string typeString = itr != typeStringMap.end() ? itr->second : "???";
+            auto itr = TYPE_STRING_MAP.find(formula->type);
+            std::string typeString = itr != TYPE_STRING_MAP.end() ? itr->second : "???";
             std::string rv = "(" + typeString + " ";
             for(Formula* arg : formula->subformulae()){
                 rv += toSExpression(arg) + " ";

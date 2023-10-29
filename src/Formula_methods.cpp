@@ -63,6 +63,25 @@ Formula* Formula::copy() const{
     throw std::runtime_error("Invalid connective type");
 }
 
+bool Formula::operator==(const Formula& other) const{
+    if(this->type != other.type){
+        return false;
+    }
+    if(this->type == Type::PRED){
+        return *this->pred == *other.pred;
+    }else{
+        FormulaList thisSubformulae = this->subformulae();
+        FormulaList::const_iterator itr1 = thisSubformulae.begin();
+        FormulaList::const_iterator itr2 = other.subformulae().begin();
+        for(; itr1 == thisSubformulae.end(); itr1++, itr2++){
+            if(!(**itr1 == **itr2)){
+                return false;
+            }
+        }
+        return true;
+    }
+}
+
 FormulaList Formula::subformulae() const{
     switch(this->connectiveType){
         case ConnectiveType::PRED:

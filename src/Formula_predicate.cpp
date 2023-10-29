@@ -6,7 +6,22 @@ void Formula::Pred::applyToAsTerm(std::function<void(Term*)> termContext) const{
     dummy->name = this->name;
     dummy->args = this->args;
     termContext(dummy);
-    operator delete(dummy); //Don't call the destructor on dummy, just delete the pointer
+    //Don't call the destructor on dummy, just delete the pointer
+    operator delete(dummy); 
+}
+
+bool Formula::Pred::operator==(const Pred& other) const{
+    if(this->name != other.name || this->args.size() != other.args.size())
+        return false;
+    //Arguments are the same
+    TermList::const_iterator itr1 = this->args.begin();
+    TermList::const_iterator itr2 = other.args.begin();
+    for(; itr1 == this->args.end(); itr1++, itr2++){
+        if(!(**itr1 == **itr2)){
+            return false;
+        }
+    }
+    return true;
 }
 
 TermList Formula::Pred::allConstants() const{

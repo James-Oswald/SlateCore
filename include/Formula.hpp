@@ -53,6 +53,8 @@ struct Formula{
         std::string name;       ///< the identifier for this predicate.
         TermList args;          ///< the list of arguments to this predicate.
 
+        bool operator==(const Pred& other) const;
+
         /** 
          * @brief gets A list of pointers to all constants (and possible bound
          * variables) inside the predicate. 
@@ -121,6 +123,8 @@ struct Formula{
 
     /** @brief Returns a pointer to a copy of this formula */
     Formula* copy() const;
+
+    bool operator==(const Formula& other) const;
 
     ///@}
     /** @name Subformula & Subterm utilities */
@@ -293,6 +297,17 @@ Formula* Iff(Formula* left, Formula* right);
 Formula* Forall(std::string varName, Formula* arg);
 Formula* Exists(std::string varName, Formula* arg);
 
-std::string toSExpression(Term* formula);
-std::string toSExpression(Formula* formula);
+std::string toSExpression(const Term* formula);
+std::string toSExpression(const Formula* formula);
 std::string toFirstOrderTPTP(std::string name, std::string type, Formula* formula);
+
+const std::unordered_map<Formula::Type, std::string> TYPE_STRING_MAP = {
+    {Formula::Type::PRED, "Pred"},       
+    {Formula::Type::NOT, "Not"},          
+    {Formula::Type::AND, "And"},           
+    {Formula::Type::OR, "Or"},            
+    {Formula::Type::IF, "If"},            
+    {Formula::Type::IFF, "Iff"},           
+    {Formula::Type::FORALL, "Forall"},        
+    {Formula::Type::EXISTS, "Exists"},        
+};

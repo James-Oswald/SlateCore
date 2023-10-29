@@ -18,7 +18,7 @@ target_sources(SlateCore PRIVATE
     src/Formula_predicate.cpp
     src/SExpression.cpp
     src/Term.cpp
-    #src/verify.cpp
+    src/verify.cpp
 ) 
 
 enable_testing()

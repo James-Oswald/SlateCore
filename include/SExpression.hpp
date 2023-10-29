@@ -56,14 +56,28 @@ struct sExpression{
     std::string toString(bool expand = false) const;
     void print(bool expand = false) const;
 
-    sExpression& operator[](const size_t index);          //Access values based on indicies
+    /**
+     * Access values based on indicies
+    */
+    sExpression& operator[](const size_t index);          
     const sExpression& at(const size_t index) const;
 
-    sExpression& operator[](const std::string&& key);     //Access values based on keywords
+    /**
+     * Access values based on keywords
+    */
+    sExpression& operator[](const std::string&& key);     
 
-    sExpression::Type getTypeAt(const size_t index) const;             
-    std::string getValueAt(const size_t index) const;             //returns the value in the sExpression at index if its not a sub list
-    unsigned int getNumAt(const size_t) const;                    //same as getValue but if type == num casts it to an int first
+    sExpression::Type getTypeAt(const size_t index) const;    
+    /**
+     * @param index the position in the list
+     * @return the value in the sExpression at index if its not a sub list
+     */         
+    std::string getValueAt(const size_t index) const;   
+
+    /**
+     * same as getValue but if type == num casts it to an int first
+     */          
+    unsigned int getNumAt(const size_t) const;                    
 
     bool contains(const sExpression& t) const;
     sExpression atPosition(std::queue<uid_t> pos) const;

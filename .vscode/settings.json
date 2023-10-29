@@ -3,6 +3,7 @@
         "biconditional",
         "Elim",
         "idents",
+        "Subconstants",
         "Subformula",
         "subformulae",
         "Subterm",
@@ -59,7 +60,10 @@
         "streambuf": "cpp",
         "cinttypes": "cpp",
         "typeinfo": "cpp",
-        "set": "cpp"
+        "set": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "numbers": "cpp"
     },
     "C_Cpp.default.cppStandard": "gnu++20",
     "editor.rulers": [80]

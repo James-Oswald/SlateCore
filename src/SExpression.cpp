@@ -7,7 +7,6 @@
  * This file implements the sExpression class outlined in SExpression.hpp 
  * along with various other utils that make this possible such: as a combine
  * S-Expression lexer and tokenizer, a parser, and a token class.
- *
  */
 
 #include<cctype>
@@ -17,19 +16,19 @@
 
 #include "SExpression.hpp"
 
-// Token Helper Class ===================================================================
+// Token Helper Class ==========================================================
 
 /**
  * @brief Enum containing possible token types
- * Some members of this Enum correspond directly to sExpression::Type members values
- * and are directly converted to them within parserBaseCase(). This must be kept in
- * mind in the event of future modification. 
+ * Some members of this Enum correspond directly to sExpression::Type
+ * members values and are directly converted to them within parserBaseCase().
+ * This must be kept in mind in the event of future modification. 
  */
 enum class TokenType{
     Keyword = 0,            ///< Tokens beginning with :
-    Number = 1,             ///< Tokens containing unsigned Ints (At the moment other numeric types are unsupported by the lexer)
+    Number = 1,             ///< Tokens containing unsigned Ints
     String = 2,             ///< Tokens enclosed in quotes
-    Symbol = 3,             ///< Tokens containing any other valid identifier or name
+    Symbol = 3,             ///< Tokens containing any other valid identifier
     Left_Parenthesis = 4,   ///< A token containing a left parenthesis "("
     Right_Parenthesis = 5   ///< A token containing a right parenthesis ")"
 };
@@ -44,27 +43,28 @@ Token::Token(TokenType type_, std::string value_)
 :type(type_), value(value_)
 {}
 
-//Tokenizer and Lexer Code ============================================================================
-/**
- * @name The Lexer
- */
-///@{
-    
+//Tokenizer and Lexer Code =====================================================
+
 //Lexer Globals
-const std::unordered_set<char> ignoreChars({' ', '\t', '\n'});            //Ignored characters when parsing 
-const std::unordered_set<char> endingChars({' ', '(', ')', '\t', '\n'});   //Tokens that end a previous token if encountered
+//Ignored characters when parsing 
+const std::unordered_set<char> ignoreChars({' ', '\t', '\n'});
+//Tokens that end a previous token if encountered     
+const std::unordered_set<char> endingChars({' ', '(', ')', '\t', '\n'});   
 
 //Lexer helper functions
 
-//starting at position i of sExpressionString, adds a token with all chars until a " is hit
-inline void addStringToken(const std::string& expressionString, int &i, std::vector<Token>& tokens){
+//starting at position i of sExpressionString, adds a token with all chars
+//until a " is hit
+inline void addStringToken(const std::string& expressionString, int &i,
+                           std::vector<Token>& tokens){
     bool foundEndOfString = false;
     std::string tokenValue = "";
     size_t j;
     for(j = i+1; j<expressionString.length(); j++){
         char strCur = expressionString[j];
         char strLast = expressionString[j-1];
-        if(strCur == '\"' && strLast != '\\'){  //if we're the end of the string, but not an escaped end of string
+        //if we're the end of the string, but not an escaped end of string
+        if(strCur == '\"' && strLast != '\\'){  
             foundEndOfString = true;
             break;
         }else{
@@ -80,10 +80,12 @@ inline void addStringToken(const std::string& expressionString, int &i, std::vec
     i = j;
 }
 
-inline void addKeyToken(const std::string& expressionString, int &i, std::vector<Token>& tokens){
+inline void addKeyToken(const std::string& expressionString, int &i,
+                        std::vector<Token>& tokens){
     std::string tokenValue = "";
     size_t j;
-    //Grab chars for our token until we hit an end character or reach the end of the expression string
+    //Grab chars for our token until we hit an end character or reach the end of
+    //the expression string
     for(j = i+1; j<expressionString.length(); j++){
         char curKeyChar = expressionString[j];
         if(endingChars.find(curKeyChar) != endingChars.end())
@@ -95,14 +97,18 @@ inline void addKeyToken(const std::string& expressionString, int &i, std::vector
     i = j-1;
 }
 
-inline void addNormalToken(const std::string& expressionString, int &i, std::vector<Token>& tokens){
-    bool numeric = true;    //Keep track of weather or not the token is a numeric (an unsigned int)
+inline void addNormalToken(const std::string& expressionString, int &i,
+                           std::vector<Token>& tokens){
+    //Keep track of weather or not the token is a numeric (an unsigned int)
+    bool numeric = true;    
     std::string tokenValue = "";
     size_t j;
-    //Grab chars for our token until we hit an end character or reach the end of the expression string
+    //Grab chars for our token until we hit an end character or reach the end
+    //of the expression string
     for(j = i; j < expressionString.length(); j++){  
         char strCur = expressionString[j];
-        if(endingChars.find(strCur) != endingChars.end()){ //if we hit an ending char
+        //if we hit an ending char
+        if(endingChars.find(strCur) != endingChars.end()){ 
             break;
         }else{
             numeric = numeric && isdigit(strCur);
@@ -118,12 +124,15 @@ inline void addNormalToken(const std::string& expressionString, int &i, std::vec
 
 
 /**
- * @brief Takes an S-expression string and tokenizes it, as well as lexing it by identifying the tokens
+ * @brief Takes an S-expression string and tokenizes it, as well as lexing it 
+ *        by identifying the tokens
  * @param expressionString A string containing an s-expression to tokenize
- * @return A vector containing the list of token objects containing both their content and type.
+ * @return A vector containing the list of token objects containing both their
+ *         content and type.
  * @throws std::runtime-error if an error is encountered lexing tokens 
- * The lexer both tokenizes and lexes the expressionString. The lexer can fail while lexing a token if the token
- * is not well formed, I.E. a string token without a closing quote.
+ *         The lexer both tokenizes and lexes the expressionString. The lexer 
+ *         can fail while lexing a token if the token is not well formed, 
+ *         I.E. a string token without a closing quote.
  */
 std::vector<Token> lex(const std::string& expressionString){
     std::vector<Token> tokens; 
@@ -137,19 +146,15 @@ std::vector<Token> lex(const std::string& expressionString){
             addStringToken(expressionString, i, tokens);
         }else if(curChar == ':'){                                      
             addKeyToken(expressionString, i, tokens);
-        }else if(ignoreChars.find(curChar) == ignoreChars.end()){  //Both Symbols and Numbers
+        }else if(ignoreChars.find(curChar) == ignoreChars.end()){  
+            //Both Symbols and Numbers
             addNormalToken(expressionString, i, tokens);
         }
     }
     return tokens;
 }
-///@}
-//Parser Code ========================================================================
-/**
- * @name The Parser
- */
-///@{
 
+//Parser Code ==================================================================
 
 /**
  *   @brief A helper for the parser
@@ -166,12 +171,15 @@ std::vector<Token> lex(const std::string& expressionString){
  *       then grabSubExpression returns (a (b c)) and changes i to position Ni 
  *   ```
  */
-inline std::vector<Token> grabSubExpression(const std::vector<Token>& tokens, int& i){
+inline std::vector<Token> grabSubExpression(const std::vector<Token>& tokens,
+                                            int& i){
     int parenthesisCounter = 1;
     bool foundMatch = false;
     size_t j;
-    for(j = i+1; j < tokens.size()-1; j++){ //find the index of the closing parenthesis and store it in j
-        if(tokens[j].type == TokenType::Right_Parenthesis && parenthesisCounter == 1){
+    //find the index of the closing parenthesis and store it in j
+    for(j = i+1; j < tokens.size()-1; j++){ 
+        if(tokens[j].type == TokenType::Right_Parenthesis && \
+           parenthesisCounter == 1){
             foundMatch = true;
             break;
         }else if(tokens[j].type == TokenType::Right_Parenthesis){
@@ -181,31 +189,41 @@ inline std::vector<Token> grabSubExpression(const std::vector<Token>& tokens, in
         }
     }
     if(foundMatch){
-        std::vector<Token> subExpressionTokens(tokens.begin() + i, tokens.begin() + j + 1);
+        std::vector<Token> subExpressionTokens(
+            tokens.begin() + i,
+            tokens.begin() + j + 1
+        );
         i = j;
         return subExpressionTokens;
     }else{
-        throw std::runtime_error("S-Expression parsing error: could not find matching parenthesis");
+        throw std::runtime_error("S-Expression parsing error: "
+                                 "could not find matching parenthesis");
     }
 }
 
 
-inline void parserBaseCase(const std::vector<Token>& tokens, sExpression& expression){
+inline void parserBaseCase(const std::vector<Token>& tokens,
+                           sExpression& expression){
     Token token = tokens[0];
     //Make sure the token type is also a valid s-expression type
-    if(!(token.type >= TokenType::Keyword && token.type <= TokenType::Symbol)) 
-        throw std::runtime_error("S-Expression parsing error: invalid token type for conversion "
-            + std::to_string((int)token.type));
+    if(!(token.type >= TokenType::Keyword && token.type <= TokenType::Symbol)){ 
+        throw std::runtime_error("S-Expression parsing error: invalid token"
+              " type for conversion " + std::to_string((int)token.type));
+    }
     expression.type = static_cast<sExpression::Type>(token.type);
     expression.value = token.value;
 }
 
 sExpression parseTokens(const std::vector<Token>& tokens);
 
-inline void parserRecursiveCase(const std::vector<Token>& tokens, sExpression& expression){
-    if(tokens[0].type != TokenType::Left_Parenthesis 
-            || tokens[tokens.size()-1].type != TokenType::Right_Parenthesis)
-        throw std::runtime_error("S-Expression parsing error: Expected list to be wrapped by Parenthesis");
+inline void parserRecursiveCase(const std::vector<Token>& tokens,
+                                sExpression& expression){
+    if(tokens[0].type != TokenType::Left_Parenthesis ||
+        tokens[tokens.size()-1].type != TokenType::Right_Parenthesis
+    ){
+        throw std::runtime_error("S-Expression parsing error: Expected list to"
+                                 "be wrapped by Parenthesis");
+    }
     expression.type = sExpression::Type::List;
     expression.members = std::vector<sExpression>();
     std::vector<Token> subTokens;
@@ -221,22 +239,26 @@ inline void parserRecursiveCase(const std::vector<Token>& tokens, sExpression& e
     }
 }
 
-// Parser ===============================================================================
+// Parser ======================================================================
 
 //Recursive s-expression parser
 sExpression parseTokens(const std::vector<Token>& tokens){
     sExpression expression; 
     if(tokens.size() == 0){
-        throw std::runtime_error("S-Expression parsing error: Nothing to parse");
-    }else if(tokens.size() == 1){       
-        parserBaseCase(tokens, expression); //Base case, only passing a list with a single token
-    }else{                                  
-        parserRecursiveCase(tokens, expression); //Recursive case, passing token list
+        throw std::runtime_error(
+            "S-Expression parsing error: Nothing to parse"
+        );
+    }else if(tokens.size() == 1){     
+        //Base case, only passing a list with a single token  
+        parserBaseCase(tokens, expression); 
+    }else{
+        //Recursive case, passing token list                                  
+        parserRecursiveCase(tokens, expression); 
     }
     return expression;
 }
 
-//sExpression members ==================================================================
+//sExpression members ==========================================================
 
 sExpression::sExpression()
 :type(sExpression::Type::Keyword), value(""){
@@ -278,7 +300,8 @@ sExpression& sExpression::operator=(const sExpression& expression){
 }
 
 //Convert an S expression to a string representation
-std::string recursiveToString(const sExpression& expression, size_t depth, bool expand){
+std::string recursiveToString(const sExpression& expression, size_t depth,
+                              bool expand){
     std::string result = "";
     if(expression.type == sExpression::Type::List){
         result += (expand ? std::string(' ', depth+1) + "(\n" : "(");
@@ -289,11 +312,13 @@ std::string recursiveToString(const sExpression& expression, size_t depth, bool 
         }
         result += (expand ? std::string(' ', depth=1) + ")\n" : ")");
     }else if(expression.type == sExpression::Type::Keyword){
-        result += (expand ? std::to_string((int)expression.type) + std::string(' ', depth)\
-               + ":" + expression.value + "\n" : ":" + expression.value + " ");
+        result += (expand ? std::to_string((int)expression.type) 
+               + std::string(' ', depth) + ":" + expression.value + "\n"  
+               : ":" + expression.value + " ");
     }else{
-        result += (expand ? std::to_string((int)expression.type) + std::string(' ', depth)\
-               + expression.value + "\n" : expression.value + " ");
+        result += (expand ? std::to_string((int)expression.type) 
+               + std::string(' ', depth) + expression.value + "\n" 
+               : expression.value + " ");
     }
     return result;
 } 
@@ -313,51 +338,70 @@ std::ostream& operator<<(std::ostream& os, const sExpression& expression){
 }
 
 sExpression& sExpression::operator[](const size_t index){
-    if(type != sExpression::Type::List)
-        throw std::runtime_error("S-Expression Error: can not index a non-list type S-Expression");
+    if(type != sExpression::Type::List){
+        throw std::runtime_error("S-Expression Error: can not index a non-list" 
+                                 " type S-Expression");
+    }
     return members[index];
 }
 
 const sExpression& sExpression::at(const size_t index) const{
-    if(type != sExpression::Type::List)
-        throw std::runtime_error("S-Expression Error: can not index a non-list type S-Expression");
+    if(type != sExpression::Type::List){
+        throw std::runtime_error("S-Expression Error: can not index a non-list" 
+                                 " type S-Expression");
+    }
     return members[index];
 }
 
-/*
-    Returns a reference to the sExpression following a key in the current sExpression
-*/
+/**
+ * @return a reference to the sExpression following a key in the
+ *         current sExpression
+ */
 sExpression& sExpression::operator[](const std::string&& key){
-    if(type != sExpression::Type::List)
-        throw std::runtime_error("S-Expression Error: Can not lookup key in a non-list type S-Expression");
-    for(size_t i = 0; i < members.size(); i++)
-        if(members[i].type == sExpression::Type::Keyword && members[i].value == key){
-            if(i == members.size()-1)
-                throw std::runtime_error("S-Expression Error: Key found at end of list without pair");
-            if(members[i+1].type == sExpression::Type::Keyword)
-                throw std::runtime_error("S-Expression Error: Key value is another key");
+    if(type != sExpression::Type::List){
+        throw std::runtime_error("S-Expression Error: Can not lookup key in a" 
+                                 "non-list type S-Expression");
+    }
+    for(size_t i = 0; i < members.size(); i++){
+        if(members[i].type == sExpression::Type::Keyword && \
+           members[i].value == key){
+            if(i == members.size()-1){
+                throw std::runtime_error("S-Expression Error: Key found at end" 
+                                         " of list without pair");
+            }
+            if(members[i+1].type == sExpression::Type::Keyword){
+                throw std::runtime_error("S-Expression Error: Key value is"
+                                         " another key");
+            }
             return members[i+1];
         }
+    }
     throw std::runtime_error("S-Expression Error: Key value not found");
 }
 
 sExpression::Type sExpression::getTypeAt(const size_t index) const{
     if(type != sExpression::Type::List)
-        throw std::runtime_error("S-Expression Error: can not index a non-list type S-Expression");
+        throw std::runtime_error("S-Expression Error: can not index a non-list"
+                                 " type S-Expression");
     return members[index].type;
 }             
 
 std::string sExpression::getValueAt(const size_t index) const{
-    if(type != sExpression::Type::List)
-        throw std::runtime_error("S-Expression Error: can not index a non-list type S-Expression");
-    if(members[index].type == sExpression::Type::List)
-        throw std::runtime_error("S-Expression Error: index " + std::to_string(index) + " contains a list type S-expression");
+    if(type != sExpression::Type::List){
+        throw std::runtime_error("S-Expression Error: can not index a non-list" 
+                                 " type S-Expression");
+    }
+    if(members[index].type == sExpression::Type::List){
+        throw std::runtime_error("S-Expression Error: index " + 
+            std::to_string(index) + " contains a list type S-expression");
+    }
     return members[index].value;
 }   
 
 unsigned int sExpression::getNumAt(const size_t index) const{
     if(members[index].type != sExpression::Type::Number)
-        throw std::runtime_error("S-Expression Error: item at index " + std::to_string(index) + " is not a number");
+        throw std::runtime_error("S-Expression Error: item at index " +
+                                 std::to_string(index) + " is not a number");
     return std::stoi(getValueAt(index));
 }
 
@@ -401,13 +445,14 @@ std::queue<uid_t> sExpression::positionOf(const sExpression& t) const {
 }
 
 // Finds the first position that matches the sub-term t
-std::queue<uid_t> sExpression::positionOf(const sExpression& t, std::queue<uid_t> pos) const {
+std::queue<uid_t> sExpression::positionOf(const sExpression& t,
+                                          std::queue<uid_t> pos) const {
     if (*this == t) {
         return pos;
     }
 
     if (this->type != sExpression::Type::List) {
-        throw std::out_of_range("S-Expression Error: Sub-term is not within term");
+        throw std::out_of_range("S-Expression Error: Sub-term is not in term");
     }
 
     for (size_t i = 0; i < this->members.size(); i++) {
@@ -433,13 +478,15 @@ sExpression sExpression::atPosition(std::queue<uid_t> pos) const {
     }
 
     if (this->type != sExpression::Type::List) {
-        throw std::out_of_range("S-Expression Error: Position does not exist for this term");
+        throw std::out_of_range("S-Expression Error: Position does not exist" 
+                                "for this term");
     }
 
     const uid_t pos_id = pos.front();
     pos.pop();
     if (pos_id >= this->members.size()) {
-        throw std::out_of_range("S-Expression Error: Position does not exist for this term");
+        throw std::out_of_range("S-Expression Error: Position does not exist"
+                                " for this term");
     }
 
     return this->atPosition(pos);
