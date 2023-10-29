@@ -45,7 +45,7 @@ int main(){
     pFormula f1 (Exists("x", Forall("y", Pred("eq", {Var("x"), Var("y")}))));
     std::cout<<toSExpression(f1.get())<<std::endl;
     std::cout<<toFirstOrderTPTP("f1", "hypothesis", f1.get())<<std::endl;
-    assert(toSExpression(f1.get()) == "(Exists (Forall (eq x y)))");
+    assert(toSExpression(f1.get()) == "(exists x (forall y (eq x y)))");
     assert(f1->depth() == 3);
     assert(f1->depthWithTerms() == 4);
     assert(f1->quantifier->var == "x");
@@ -82,7 +82,7 @@ int main(){
     std::cout<<toSExpression(f2.get())<<std::endl;
     //std::cout<<toFirstOrderTPTP("f2", "hypothesis", f2.get())<<std::endl;
     assert(toSExpression(f2.get()) == 
-          "(Forall (If (And (P 0) (Forall (If (P n) (P (add n 1))))) (Forall (P n))))");
+          "(forall P (if (and (P 0) (forall n (if (P n) (P (add n 1))))) (forall n (P n))))");
     assert(f2->depth() == 6);
     assert(f2->depthWithTerms() == 8);
     assert(f2->quantifier->var == "P");

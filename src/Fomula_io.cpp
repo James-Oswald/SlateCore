@@ -4,6 +4,7 @@
 #include<unordered_set>
 #include<stdexcept>
 
+#include "SExpression.hpp"
 #include "Formula.hpp"
 
 //Construction Helpers =========================================================
@@ -97,6 +98,90 @@ Formula* Exists(std::string varName, Formula* arg){
     return rv;
 }
 
+Term* termFromSExpression(const sExpression& expr){
+    if(expr.type != sExpression::Type::List){
+        return Const(expr.value);
+    }else{
+        sExpression firstMember = expr.members[0];
+        if(firstMember.type == sExpression::Type::List){
+            throw std::runtime_error("Malformed Term SExpression: " 
+                                     + expr.toString());
+        }
+        std::string name = firstMember.value;
+        TermList args;
+        //Recursively convert all subterms.
+        std::vector<sExpression>::const_iterator itr = expr.members.cbegin();
+        itr++;
+        for(;itr != expr.members.end(); itr++){
+            args.push_back(termFromSExpression(*itr));
+        }
+        return Func(name, args);
+    }
+}
+
+Formula* fromSExpression(const sExpression& expr){
+    if(expr.type != sExpression::Type::List){
+        return Prop(expr.value);
+    }else{
+        sExpression firstMember = expr.members[0];
+        if(firstMember.type == sExpression::Type::List){
+            throw std::runtime_error("Malformed Formula SExpression: " 
+                                     + expr.toString());
+        }
+        std::string name = firstMember.value; 
+        //If the connective name is a valid connective and uses the right
+        //number of arguments, it is a proper connective, otherwise
+        //it is treated as a predicate.
+        if(
+            STRING_TYPE_MAP.contains(name) &&
+            TYPE_ARGS_MAP.at(STRING_TYPE_MAP.at(name)) == expr.members.size() - 1
+        ){
+            switch(STRING_TYPE_MAP.at(name)){
+                case Formula::Type::AND:
+                    return And(fromSExpression(expr.members[1]), fromSExpression(expr.members[2]));
+                case Formula::Type::OR:
+                    return Or(fromSExpression(expr.members[1]), fromSExpression(expr.members[2]));
+                case Formula::Type::IF:
+                    return If(fromSExpression(expr.members[1]), fromSExpression(expr.members[2]));
+                case Formula::Type::IFF:
+                    return Iff(fromSExpression(expr.members[1]), fromSExpression(expr.members[2]));
+                case Formula::Type::NOT:
+                    return Not(fromSExpression(expr.members[1]));
+                case Formula::Type::FORALL:{
+                    if(expr.members[1].type == sExpression::Type::List){
+                        throw std::runtime_error("Lists of vars are unsupported");
+                    }
+                    return Forall(expr.members[1].value, fromSExpression(expr.members[2]));
+                }
+                case Formula::Type::EXISTS:{
+                    if(expr.members[1].type == sExpression::Type::List){
+                        throw std::runtime_error("Lists of vars are unsupported");
+                    }
+                    return Exists(expr.members[1].value, fromSExpression(expr.members[2]));
+                }
+                default:
+                    throw std::runtime_error("Unsupported Connective");
+            }
+        }else{
+            //Recursively convert everything else as a subterm
+            TermList args;
+            std::vector<sExpression>::const_iterator itr = expr.members.cbegin();
+            itr++;
+            for(;itr != expr.members.end(); itr++){
+                args.push_back(termFromSExpression(*itr));
+            }
+            return Pred(name, args);
+        }
+    }
+}
+
+Formula* fromSExpressionString(std::string sExpressionString){
+    sExpression expr(sExpressionString);
+    return fromSExpression(expr);
+}
+
+// SExpression Converters ======================================================
+
 std::string toSExpression(Term* term){
     if(term->args.size() == 0){
         return term->name;
@@ -120,7 +205,13 @@ std::string toSExpression(const Formula* formula){
                 rv = toSExpression(t);
             });
             return rv;
-        }    
+        }
+        case Formula::Type::FORALL:
+        case Formula::Type::EXISTS:{
+            std::string name = TYPE_STRING_MAP.at(formula->type);
+            return "(" + name + " " + formula->quantifier->var +
+                   " " + toSExpression(formula->quantifier->arg) + ")";
+        }
         default:{
             //If the formula is a valid type, use its type string as its operator, else use "???"
             auto itr = TYPE_STRING_MAP.find(formula->type);

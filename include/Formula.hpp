@@ -5,9 +5,10 @@
 #include<functional>
 
 #include"Term.hpp"
+#include"SExpression.hpp"
 
 //Forward declare Formula for using defs
-class Formula;
+struct Formula;
 
 /**
  * @brief A list of formulae
@@ -297,17 +298,39 @@ Formula* Iff(Formula* left, Formula* right);
 Formula* Forall(std::string varName, Formula* arg);
 Formula* Exists(std::string varName, Formula* arg);
 
+Formula* fromSExpression(const sExpression& expr);
+Formula* fromSExpressionString(std::string sExpressionString);
 std::string toSExpression(const Term* formula);
 std::string toSExpression(const Formula* formula);
 std::string toFirstOrderTPTP(std::string name, std::string type, Formula* formula);
 
 const std::unordered_map<Formula::Type, std::string> TYPE_STRING_MAP = {
-    {Formula::Type::PRED, "Pred"},       
-    {Formula::Type::NOT, "Not"},          
-    {Formula::Type::AND, "And"},           
-    {Formula::Type::OR, "Or"},            
-    {Formula::Type::IF, "If"},            
-    {Formula::Type::IFF, "Iff"},           
-    {Formula::Type::FORALL, "Forall"},        
-    {Formula::Type::EXISTS, "Exists"},        
+    {Formula::Type::PRED, "pred"},       
+    {Formula::Type::NOT, "not"},          
+    {Formula::Type::AND, "and"},           
+    {Formula::Type::OR, "or"},            
+    {Formula::Type::IF, "if"},            
+    {Formula::Type::IFF, "iff"},           
+    {Formula::Type::FORALL, "forall"},        
+    {Formula::Type::EXISTS, "exists"},        
+};
+
+const std::unordered_map<std::string, Formula::Type> STRING_TYPE_MAP = {      
+    {"not", Formula::Type::NOT},          
+    {"and", Formula::Type::AND},           
+    {"or", Formula::Type::OR},            
+    {"if", Formula::Type::IF},            
+    {"iff", Formula::Type::IFF},           
+    {"forall", Formula::Type::FORALL},        
+    {"exists", Formula::Type::EXISTS}
+};
+
+const std::unordered_map<Formula::Type, size_t> TYPE_ARGS_MAP = {     
+    {Formula::Type::NOT, 1},          
+    {Formula::Type::AND, 2},           
+    {Formula::Type::OR, 2},            
+    {Formula::Type::IF, 2},            
+    {Formula::Type::IFF, 2},           
+    {Formula::Type::FORALL, 2},        
+    {Formula::Type::EXISTS, 2},        
 };

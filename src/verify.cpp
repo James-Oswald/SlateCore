@@ -8,6 +8,18 @@
 #include"Formula.hpp"
 #include"verify.hpp"
 
+ProofNode* newProofNode(
+    std::string formulaExpr, std::string justification, 
+    std::vector<ProofNode*> parents
+){
+    ProofNode* p = new ProofNode;
+    p->formula = fromSExpressionString(formulaExpr);
+    p->justification = JUSTIFICATION_MAP[justification];
+    p->parents = parents;
+    p->assumptions = {};
+    return p;
+}
+
 struct VerifyResult{
     bool verified;
     size_t depth;
@@ -106,6 +118,7 @@ std::optional<std::string> err, err1, err2;
 
 #define EXPECT(COND)\
 err = COND;\
+depth++;\
 if(err){\
     return {false, depth++, err.value() + "."};\
 }\
@@ -113,8 +126,9 @@ if(err){\
 #define EXPECT_EITHER(COND1, COND2)\
 err1 = COND1;\
 err2 = COND2;\
+depth++;\
 if(err1 && err2){\
-    return {false, depth++, "Either " + err1.value() +\
+    return {false, depth, "Either " + err1.value() +\
                             " or " + err2.value() + "."};\
 }\
 
@@ -277,7 +291,6 @@ VerifyResult verifyIffElim(ProofNode* node){
 
 const std::unordered_map<Justification, VerifyResult(*)(ProofNode*)> VERIFIERS =
 {
-    {Justification::Assumption, verifyAssumption},
     {Justification::AndIntro, verifyAndIntro},
     {Justification::AndElim, verifyAndElim},
     {Justification::OrIntro, verifyOrIntro},
@@ -291,15 +304,20 @@ const std::unordered_map<Justification, VerifyResult(*)(ProofNode*)> VERIFIERS =
 };
 
 std::optional<std::string> verify(ProofNode* node){
-    VerifyResult best = {false, 0, ""};
-    while(std::next_permutation(node->parents.begin(), node->parents.end())){
-        VerifyResult result = VERIFIERS.at(node->justification)(node);
-        if(result.verified){
-            return std::nullopt;
+    if(node->justification == Justification::Assumption){
+        VerifyResult result = verifyAssumption(node);
+        return result.verified ? std::nullopt : std::make_optional(result.errMsg);
+    }else{
+        VerifyResult best = {false, 0, ""};
+        while(std::next_permutation(node->parents.begin(), node->parents.end())){
+            VerifyResult result = VERIFIERS.at(node->justification)(node);
+            if(result.verified){
+                return std::nullopt;
+            }
+            if(result.depth > best.depth){
+                best = result;
+            }
         }
-        if(result.depth > best.depth){
-            best = result;
-        }
+        return std::make_optional(best.errMsg);
     }
-    return std::make_optional(best.errMsg);
 }
