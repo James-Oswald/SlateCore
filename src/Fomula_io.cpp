@@ -4,10 +4,9 @@
 #include<unordered_set>
 #include<stdexcept>
 
-#include "settings.hpp"
 #include "SExpression.hpp"
 #include "Formula.hpp"
-
+#include "settings.hpp"
 
 
 

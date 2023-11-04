@@ -15,7 +15,7 @@ ProofNode* newProofNode(
 ){
     ProofNode* p = new ProofNode;
     p->formula = fromSExpressionString(formulaExpr);
-    p->justification = JUSTIFICATION_MAP.at(justification);
+    p->justification = JUSTIFICATION_STRING_MAP.at(justification);
     p->parents = parents;
     p->assumptions = {};
     return p;
