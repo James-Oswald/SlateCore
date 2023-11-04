@@ -14,12 +14,15 @@ ProofNode* newProofNode(
 ){
     ProofNode* p = new ProofNode;
     p->formula = fromSExpressionString(formulaExpr);
-    p->justification = JUSTIFICATION_MAP[justification];
+    p->justification = JUSTIFICATION_MAP.at(justification);
     p->parents = parents;
     p->assumptions = {};
     return p;
 }
 
+/**
+ * Structure for representing results with error messages
+*/
 struct VerifyResult{
     bool verified;
     size_t depth;
@@ -70,7 +73,7 @@ std::optional<std::string> hasConnective(const ProofNode* p, Formula::Type t){
     if(p->formula->type == t){
         return std::nullopt;
     }else{
-        return std::make_optional("Expected" + toSExpression(p->formula) +
+        return std::make_optional("expected " + toSExpression(p->formula) +
         " to have top level connective " + TYPE_STRING_MAP.at(t) + 
         " but it has " + TYPE_STRING_MAP.at(p->formula->type));
     }
@@ -80,7 +83,7 @@ std::optional<std::string> hasParents(const ProofNode* p, size_t n){
     if(p->parents.size() == n){
         return std::nullopt;
     }else{
-        return std::make_optional("expected" + toSExpression(p->formula) +
+        return std::make_optional("expected " + toSExpression(p->formula) +
         " to have" + std::to_string(n) + " parents but it has " +
         std::to_string(p->parents.size()) + "parents");
     }
@@ -93,7 +96,7 @@ std::optional<std::string> equalFormula(
     if(*a == *b){
         return std::nullopt;
     }else{
-        return std::make_optional("expected" + toSExpression(a) + " to equal "
+        return std::make_optional("expected " + toSExpression(a) + " to equal "
         + toSExpression(b));
     }
 }
@@ -309,7 +312,7 @@ std::optional<std::string> verify(ProofNode* node){
         return result.verified ? std::nullopt : std::make_optional(result.errMsg);
     }else{
         VerifyResult best = {false, 0, ""};
-        while(std::next_permutation(node->parents.begin(), node->parents.end())){
+        do{
             VerifyResult result = VERIFIERS.at(node->justification)(node);
             if(result.verified){
                 return std::nullopt;
@@ -317,7 +320,7 @@ std::optional<std::string> verify(ProofNode* node){
             if(result.depth > best.depth){
                 best = result;
             }
-        }
+        }while(std::next_permutation(node->parents.begin(), node->parents.end()));
         return std::make_optional(best.errMsg);
     }
 }

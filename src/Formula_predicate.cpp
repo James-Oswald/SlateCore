@@ -16,7 +16,7 @@ bool Formula::Pred::operator==(const Pred& other) const{
     //Arguments are the same
     TermList::const_iterator itr1 = this->args.begin();
     TermList::const_iterator itr2 = other.args.begin();
-    for(; itr1 == this->args.end(); itr1++, itr2++){
+    for(; itr1 != this->args.end(); itr1++, itr2++){
         if(!(**itr1 == **itr2)){
             return false;
         }

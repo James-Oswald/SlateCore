@@ -298,8 +298,21 @@ Formula* Iff(Formula* left, Formula* right);
 Formula* Forall(std::string varName, Formula* arg);
 Formula* Exists(std::string varName, Formula* arg);
 
+/**
+ * Converts an SExpression into a formula or throws an error if malformed
+ * @param expr a reference to an SExpression Object 
+ * @returns A formula representing the given SExpression
+ */
 Formula* fromSExpression(const sExpression& expr);
+
+/**
+ * Converts an SExpression string into a formula or throws an error if malformed
+ * Wraps fromSExpression
+ * @param sExpressionString An SExpression String  
+ */
 Formula* fromSExpressionString(std::string sExpressionString);
+
+
 std::string toSExpression(const Term* formula);
 std::string toSExpression(const Formula* formula);
 std::string toFirstOrderTPTP(std::string name, std::string type, Formula* formula);

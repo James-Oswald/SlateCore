@@ -25,7 +25,10 @@ enum class Justification {
     IffElim,
 };
 
-std::unordered_map<std::string, Justification> JUSTIFICATION_MAP = {
+/**
+ * A global map that takes strings and returns justification enums
+*/
+const std::unordered_map<std::string, Justification> JUSTIFICATION_MAP = {
     {"Assumption", Justification::Assumption},
     {"AndElim", Justification::AndElim},
     {"AndIntro", Justification::AndIntro},
@@ -44,11 +47,12 @@ std::unordered_map<std::string, Justification> JUSTIFICATION_MAP = {
  * assumptions. 
 */
 struct ProofNode {
-    Formula* formula;
-    Justification justification;
+    Formula* formula;                   ///< Formulae on the node 
+    Justification justification;        ///<
     std::vector<ProofNode*> parents;
     std::set<ProofNode*> assumptions;
 };
+
 
 ProofNode* newProofNode(
     std::string formulaExpr, std::string justification, 

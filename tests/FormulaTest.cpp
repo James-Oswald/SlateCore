@@ -111,4 +111,16 @@ int main(){
     assert(f3->allConstants().size() == 0);
     assert(f3->allPredicates().size() == 4);
     assert(!f3->isProposition());
+
+    pFormula e1 (Prop("A"));
+    pFormula e2 (Prop("A"));
+    assert(*e1 == *e2);
+
+    pFormula e3 (Prop("A"));
+    pFormula e4 (Prop("B"));
+    assert(!(*e3 == *e4));
+
+    pFormula e5 (Exists("x", Forall("y", Pred("eq", {Var("x"), Var("y")}))));
+    pFormula e6 (Exists("x", Forall("y", Pred("eq", {Var("x"), Var("y")}))));
+    assert(*e5 == *e6);
 }

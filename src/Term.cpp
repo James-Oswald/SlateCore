@@ -24,8 +24,9 @@ Term* Term::copy() const{
 */
 bool Term::operator==(const Term& term){
     //Name and argument size are the same.
-    if(this->name != term.name || this->args.size() != term.args.size())
+    if(this->name != term.name || this->args.size() != term.args.size()){
         return false;
+    }
     //Arguments are the same
     TermList::const_iterator itr1 = this->args.begin();
     TermList::const_iterator itr2 = term.args.begin();
