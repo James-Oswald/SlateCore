@@ -244,7 +244,7 @@ VerifyResult verifyIfIntro(ProofNode* node){
     EXPECT(hasConnective(node, Formula::Type::IF));
     Formula* antecedent = node->formula->binary->left;
     Formula* consequent = node->formula->binary->right;
-    EXPECT(hasAssumption(node, antecedent));
+    EXPECT(hasAssumption(node->parents[0], antecedent));
     EXPECT(equalFormula(consequent, node->parents[0]->formula));
     node->assumptions = parentAssumptionUnionExcluding(node, {antecedent});
     RULE_END();
