@@ -85,8 +85,8 @@ std::optional<std::string> hasParents(const ProofNode* p, size_t n){
         return std::nullopt;
     }else{
         return std::make_optional("expected " + toSExpression(p->formula) +
-        " to have" + std::to_string(n) + " parents but it has " +
-        std::to_string(p->parents.size()) + "parents");
+        " to have " + std::to_string(n) + " parents but it has " +
+        std::to_string(p->parents.size()) + " parents");
     }
 }
 
@@ -111,8 +111,8 @@ std::optional<std::string> hasAssumption(const ProofNode* p, const Formula* f){
             return std::nullopt;
         }
     }
-    return std::make_optional("expected" + toSExpression(p->formula) + 
-        " to have " + toSExpression(f) + "as an assumption");
+    return std::make_optional("expected " + toSExpression(p->formula) + 
+        " to have " + toSExpression(f) + " as an assumption");
 }
 
 // Error Helper Macros =========================================================
@@ -313,6 +313,7 @@ std::optional<std::string> verify(ProofNode* node){
         return result.verified ? std::nullopt : std::make_optional(result.errMsg);
     }else{
         VerifyResult best = {false, 0, ""};
+        //iterates over all permutations of parents
         do{
             VerifyResult result = VERIFIERS.at(node->justification)(node);
             if(result.verified){
