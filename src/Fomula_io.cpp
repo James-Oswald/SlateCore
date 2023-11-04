@@ -4,8 +4,12 @@
 #include<unordered_set>
 #include<stdexcept>
 
+#include "settings.hpp"
 #include "SExpression.hpp"
 #include "Formula.hpp"
+
+
+
 
 //Construction Helpers =========================================================
 
@@ -118,6 +122,16 @@ Term* termFromSExpression(const sExpression& expr){
         return Func(name, args);
     }
 }
+
+const std::unordered_map<Formula::Type, size_t> TYPE_ARGS_MAP = {     
+    {Formula::Type::NOT, 1},          
+    {Formula::Type::AND, 2},           
+    {Formula::Type::OR, 2},            
+    {Formula::Type::IF, 2},            
+    {Formula::Type::IFF, 2},           
+    {Formula::Type::FORALL, 2},        
+    {Formula::Type::EXISTS, 2},        
+};
 
 Formula* fromSExpression(const sExpression& expr){
     if(expr.type != sExpression::Type::List){
@@ -307,16 +321,7 @@ Formula* makeLegalTPTP(const Formula* formula){
     return rv;
 }
 
-using TPTPStringMapType = std::unordered_map<Formula::Type, std::string>;
-const TPTPStringMapType TPTPStringMap = {      
-    {Formula::Type::NOT, "~"},          
-    {Formula::Type::AND, "&"},           
-    {Formula::Type::OR, "|"},            
-    {Formula::Type::IF, "=>"},            
-    {Formula::Type::IFF, "<=>"},           
-    {Formula::Type::FORALL, "!"},        
-    {Formula::Type::EXISTS, "?"},        
-};
+
 
 std::string recursiveToTPTP(Term* term){
     if(term->args.size() == 0){

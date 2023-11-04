@@ -315,35 +315,8 @@ Formula* fromSExpressionString(std::string sExpressionString);
 
 std::string toSExpression(const Term* formula);
 std::string toSExpression(const Formula* formula);
+
 std::string toFirstOrderTPTP(std::string name, std::string type, Formula* formula);
 
-const std::unordered_map<Formula::Type, std::string> TYPE_STRING_MAP = {
-    {Formula::Type::PRED, "pred"},       
-    {Formula::Type::NOT, "not"},          
-    {Formula::Type::AND, "and"},           
-    {Formula::Type::OR, "or"},            
-    {Formula::Type::IF, "if"},            
-    {Formula::Type::IFF, "iff"},           
-    {Formula::Type::FORALL, "forall"},        
-    {Formula::Type::EXISTS, "exists"},        
-};
 
-const std::unordered_map<std::string, Formula::Type> STRING_TYPE_MAP = {      
-    {"not", Formula::Type::NOT},          
-    {"and", Formula::Type::AND},           
-    {"or", Formula::Type::OR},            
-    {"if", Formula::Type::IF},            
-    {"iff", Formula::Type::IFF},           
-    {"forall", Formula::Type::FORALL},        
-    {"exists", Formula::Type::EXISTS}
-};
 
-const std::unordered_map<Formula::Type, size_t> TYPE_ARGS_MAP = {     
-    {Formula::Type::NOT, 1},          
-    {Formula::Type::AND, 2},           
-    {Formula::Type::OR, 2},            
-    {Formula::Type::IF, 2},            
-    {Formula::Type::IFF, 2},           
-    {Formula::Type::FORALL, 2},        
-    {Formula::Type::EXISTS, 2},        
-};

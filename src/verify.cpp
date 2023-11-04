@@ -7,6 +7,7 @@
 
 #include"Formula.hpp"
 #include"verify.hpp"
+#include"settings.hpp"
 
 ProofNode* newProofNode(
     std::string formulaExpr, std::string justification, 
