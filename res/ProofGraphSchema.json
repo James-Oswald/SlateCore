@@ -1,0 +1,58 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "description": "A json schema for proof graphs",
+    
+    "type": "object",
+    "required": ["nodes", "links"],
+    "properties":{
+        "nodes":{
+            "type":"array",
+            "items":{
+                "type":"object",
+                "required":["id", "formula", "justification"],
+                "properties":{
+                    "id":{
+                        "type":"integer",
+                        "minimum": 0,
+                        "description":"An id for this node that will be used to describe links"
+                    },
+                    "formula":{
+                        "type":"string",
+                        "description":"An sexpression string representing the formula on this node"
+                    },
+                    "justification":{
+                        "type":"string",
+                        "enum":[
+                            "Assumption", "AndElim", "AndIntro", "OrIntro",
+                            "OrElim", "NotIntro", "NotElim", "IfIntro",
+                            "IfElim", "IffIntro", "IffElim", "ForallIntro",
+                            "ForallElim", "ExistsIntro", "ExistsElim"
+                        ],
+                        "description":"The inference rule used to justify this formula"
+                    }
+                }
+            }
+        },
+        "links":{
+            "type":"array",
+            "description":"A list of connection objects representing connections between proof nodes",
+            "items":{
+                "type":"object",
+                "description":"A connection object representing a directed connection from a proof node to another proof node",
+                "required":["from", "to"],
+                "properties":{
+                    "from":{
+                        "type":"integer",
+                        "minimum": 0,
+                        "description":"id of the node the connection is coming from"
+                    },
+                    "to":{
+                        "type":"integer",
+                        "minimum": 0,
+                        "description":"id of the node the connection is going to"
+                    }
+                }
+            }
+        }
+    }
+}

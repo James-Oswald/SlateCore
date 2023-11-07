@@ -1,0 +1,50 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "description": "A json schema for proof graphs",
+    
+    "type": "object",
+    "required": ["assumptions", "errors"],
+    "properties":{
+        "assumptions":{
+            "type":"array",
+            "items":{
+                "type":"object",
+                "required":["id", "assumptions"],
+                "properties":{
+                    "id":{
+                        "type":"integer",
+                        "minimum": 0
+                    },
+                    "assumptions":{
+                        "type": "array",
+                        "items":{
+                            "type":"integer",
+                            "minimum": 0
+                        }
+                    }
+                }
+            }
+        },
+        "errors":{
+            "type":"array",
+            "description":"A list of nodes that have failed to verify",
+            "items":{
+                "type":"object",
+                "description":"A connection object representing a directed connection from a proof node to another proof node",
+                "required":["from", "to"],
+                "properties":{
+                    "from":{
+                        "type":"integer",
+                        "minimum": 0,
+                        "description":"id of the node the connection is coming from"
+                    },
+                    "to":{
+                        "type":"integer",
+                        "minimum": 0,
+                        "description":"id of the node the connection is going to"
+                    }
+                }
+            }
+        }
+    }
+}

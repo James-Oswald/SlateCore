@@ -28,16 +28,6 @@ const std::unordered_map<std::string, Formula::Type> STRING_TYPE_MAP = {
     {"exists", Formula::Type::EXISTS}
 };
 
-const std::unordered_map<Formula::Type, std::string> TPTPStringMap = {      
-    {Formula::Type::NOT, "~"},          
-    {Formula::Type::AND, "&"},           
-    {Formula::Type::OR, "|"},            
-    {Formula::Type::IF, "=>"},            
-    {Formula::Type::IFF, "<=>"},           
-    {Formula::Type::FORALL, "!"},        
-    {Formula::Type::EXISTS, "?"},        
-};
-
 /**
  * A global map that takes strings and returns justification enums
 */

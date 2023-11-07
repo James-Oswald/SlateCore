@@ -9,17 +9,6 @@
 #include"verify.hpp"
 #include"settings.hpp"
 
-ProofNode* newProofNode(
-    std::string formulaExpr, std::string justification, 
-    std::vector<ProofNode*> parents
-){
-    ProofNode* p = new ProofNode;
-    p->formula = fromSExpressionString(formulaExpr);
-    p->justification = JUSTIFICATION_STRING_MAP.at(justification);
-    p->parents = parents;
-    p->assumptions = {};
-    return p;
-}
 
 /**
  * Structure for representing results with error messages

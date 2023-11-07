@@ -8,8 +8,6 @@
 #include "Formula.hpp"
 #include "settings.hpp"
 
-
-
 //Construction Helpers =========================================================
 
 Formula* Prop(std::string name){
@@ -320,7 +318,15 @@ Formula* makeLegalTPTP(const Formula* formula){
     return rv;
 }
 
-
+const std::unordered_map<Formula::Type, std::string> TPTPStringMap = {      
+    {Formula::Type::NOT, "~"},          
+    {Formula::Type::AND, "&"},           
+    {Formula::Type::OR, "|"},            
+    {Formula::Type::IF, "=>"},            
+    {Formula::Type::IFF, "<=>"},           
+    {Formula::Type::FORALL, "!"},        
+    {Formula::Type::EXISTS, "?"},        
+};
 
 std::string recursiveToTPTP(Term* term){
     if(term->args.size() == 0){

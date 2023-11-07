@@ -9,9 +9,18 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin)
 set(CMAKE_CXX_FLAGS_DEBUG "-O0 -g -ggdb -Wall")
 set(CMAKE_CXX_FLAGS_RELEASE "-O3 -fstack-protector -s")
 
-include_directories(${CMAKE_SOURCE_DIR}/include)
+#Encode the Json Schema as a file if it is modified
+# add_custom_command(
+#     OUTPUT src/ProofGraphSchema.cpp
+#     COMMAND echo -e "#include<string>\n\nstd::string proofGraphSchema = {\n$(xxd -i < res/ProofGraphSchema.json)};" > src/ProofGraphSchema.cpp
+#     DEPENDS res/ProofGraphSchema.json
+# )
+#add_library(ProofGraphSchema STATIC src/ProofGraphSchema.cpp)
 
-add_library(SlateCore SHARED)
+
+add_library(SlateCore STATIC)
+include_directories(${CMAKE_SOURCE_DIR}/lib/rapidjson/include)
+include_directories(${CMAKE_SOURCE_DIR}/include)
 target_sources(SlateCore PRIVATE
     src/Fomula_io.cpp
     src/Formula_methods.cpp
@@ -19,7 +28,9 @@ target_sources(SlateCore PRIVATE
     src/SExpression.cpp
     src/Term.cpp
     src/verify.cpp
-) 
+    src/ProofGraph.cpp
+    src/ProofGraphSchema.cpp
+)
 
 enable_testing()
 add_subdirectory(tests)
