@@ -144,7 +144,7 @@ Formula* fromSExpression(const sExpression& expr){
         //number of arguments, it is a proper connective, otherwise
         //it is treated as a predicate.
         if(
-            STRING_TYPE_MAP.contains(name) &&
+            STRING_TYPE_MAP.find(name) != STRING_TYPE_MAP.end() &&
             TYPE_ARGS_MAP.at(STRING_TYPE_MAP.at(name)) == expr.members.size() - 1
         ){
             switch(STRING_TYPE_MAP.at(name)){
@@ -184,6 +184,7 @@ Formula* fromSExpression(const sExpression& expr){
             return Pred(name, args);
         }
     }
+    throw std::runtime_error("Impossible");
 }
 
 Formula* fromSExpressionString(std::string sExpressionString){

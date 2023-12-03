@@ -32,7 +32,7 @@ enum class Justification {
  * assumptions. 
 */
 struct ProofNode {
-    id_t id;                            ///< Id of the node
+    size_t id;                            ///< Id of the node
     Formula* formula;                   ///< Formulae on the node 
     Justification justification;        ///< Justification for the node
     std::vector<ProofNode*> parents;    ///< Parents of the node
@@ -50,7 +50,7 @@ ProofNode* newProofNode(
 );
 
 struct ProofGraph{
-    std::unordered_map<id_t, ProofNode*> nodes;
+    std::unordered_map<size_t, ProofNode*> nodes;
     std::set<ProofNode*> assumptions;
 };
 

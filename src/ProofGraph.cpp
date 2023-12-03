@@ -47,7 +47,7 @@ ProofGraph* newProofGraph(std::string jsonProofGraph){
     
     ProofGraph* graph = new ProofGraph;
     graph->assumptions = std::set<ProofNode*>();
-    graph->nodes = std::unordered_map<id_t, ProofNode*>();
+    graph->nodes = std::unordered_map<size_t, ProofNode*>();
 
     //Create the nodes and add them to the list of all nodes
     for (rapidjson::Value::ConstValueIterator itr = nodes.Begin(); itr != nodes.End(); itr++){
@@ -64,8 +64,8 @@ ProofGraph* newProofGraph(std::string jsonProofGraph){
     //Use links to connect the nodes parents and children
     for(rapidjson::Value::ConstValueIterator itr = links.Begin(); itr != links.End(); itr++){
         const rapidjson::Value& json_link = *itr;
-        id_t from = json_link["from"].GetUint();
-        id_t to = json_link["to"].GetUint();
+        size_t from = json_link["from"].GetUint();
+        size_t to = json_link["to"].GetUint();
         ProofNode* from_p = graph->nodes[from];
         ProofNode* to_p = graph->nodes[to];
         from_p->children.push_back(to_p);

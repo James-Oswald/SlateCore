@@ -440,13 +440,13 @@ bool sExpression::contains(const sExpression& t) const {
 }
 
 // Finds the first position that matches the sub-term t
-std::queue<uid_t> sExpression::positionOf(const sExpression& t) const {
-    return this->positionOf(t, std::queue<uid_t>());
+std::queue<size_t> sExpression::positionOf(const sExpression& t) const {
+    return this->positionOf(t, std::queue<size_t>());
 }
 
 // Finds the first position that matches the sub-term t
-std::queue<uid_t> sExpression::positionOf(const sExpression& t,
-                                          std::queue<uid_t> pos) const {
+std::queue<size_t> sExpression::positionOf(const sExpression& t,
+                                          std::queue<size_t> pos) const {
     if (*this == t) {
         return pos;
     }
@@ -457,9 +457,9 @@ std::queue<uid_t> sExpression::positionOf(const sExpression& t,
 
     for (size_t i = 0; i < this->members.size(); i++) {
         try {
-            std::queue<uid_t> newPos = pos;
+            std::queue<size_t> newPos = pos;
             pos.push(i);
-            std::queue<uid_t> result = this->members[i].positionOf(t, newPos);
+            std::queue<size_t> result = this->members[i].positionOf(t, newPos);
             return result;
         } catch (...) { }
     }
@@ -471,7 +471,7 @@ std::queue<uid_t> sExpression::positionOf(const sExpression& t,
 // [] is the whole term
 // Each index in the pos variable represents the position of the argument
 // starting at 0.
-sExpression sExpression::atPosition(std::queue<uid_t> pos) const {
+sExpression sExpression::atPosition(std::queue<size_t> pos) const {
     if (pos.size() == 0) {
         sExpression result = *this;
         return result;
@@ -482,7 +482,7 @@ sExpression sExpression::atPosition(std::queue<uid_t> pos) const {
                                 "for this term");
     }
 
-    const uid_t pos_id = pos.front();
+    const size_t pos_id = pos.front();
     pos.pop();
     if (pos_id >= this->members.size()) {
         throw std::out_of_range("S-Expression Error: Position does not exist"

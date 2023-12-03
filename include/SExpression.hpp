@@ -80,9 +80,9 @@ struct sExpression{
     unsigned int getNumAt(const size_t) const;                    
 
     bool contains(const sExpression& t) const;
-    sExpression atPosition(std::queue<uid_t> pos) const;
-    std::queue<uid_t> positionOf(const sExpression& t) const;
-    std::queue<uid_t> positionOf(const sExpression& t, std::queue<uid_t> pos) const;
+    sExpression atPosition(std::queue<size_t> pos) const;
+    std::queue<size_t> positionOf(const sExpression& t) const;
+    std::queue<size_t> positionOf(const sExpression& t, std::queue<size_t> pos) const;
 };
 
 // For equality
