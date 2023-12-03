@@ -17,7 +17,6 @@ env_options = {
     "AR"    : "x86_64-w64-mingw32-gcc-ar",
     "CPPFLAGS" : "-std=c++20",
     "SHLIBSUFFIX" : ".dll"
-
 }
 
 # tweak this if you want to use different folders, or more folders, to store your source code in.
