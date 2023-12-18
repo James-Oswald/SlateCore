@@ -97,8 +97,9 @@ struct Term{
 
 /**
  * @brief Construct a Variable Term.
- * @details Since we make no semantic distinction at the representational level, this function is identical
- * to Const, but can aide in the visual representation of formulae construction.
+ * @details Since we make no semantic distinction at the representational level,
+ * this function is identical to Const, but can aide in the visual 
+ * representation of formulae construction.
  * @param name the identifier for this variable. 
  * @return a pointer to a new variable term.
 */
