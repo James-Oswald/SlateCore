@@ -1,3 +1,10 @@
+/**
+ * @file Formula.hpp
+ * @brief Contains the Formula struct and related utilities
+ * @author James Oswald
+ * @details Originally created as the main formula reper for Eminence Prover
+ */
+
 #pragma once
 
 #include<string>
@@ -71,11 +78,15 @@ struct Formula{
         size_t depth() const;
 
         /** 
-         *  @brief Interpret a predicate as a term and apply an arbitrary function to it. 
-         *  @details Provides a memory safe context in which the predicate is interpreted as a term. 
-         *  This is useful as it allows us to take advantage of the shared structure underlying predicates and terms
-         *  @param termContext a function which takes the predicate interpreted as a term and does something with it
-         *  output can be obtained via binding outside vars by reference.  
+         * @brief Interpret a predicate as a term and apply an arbitrary 
+         * function to it. 
+         * @details Provides a memory safe context in which the predicate 
+         * is interpreted as a term. This is useful as it allows us to 
+         * take advantage of the shared structure underlying predicates
+         * and terms. 
+         * @param termContext a function which takes the predicate interpreted
+         * as a term and does something with it. Output can be obtained via 
+         * binding outside vars by reference.  
         */
         void applyToAsTerm(std::function<void(Term*)> termContext) const;
     };
@@ -93,11 +104,11 @@ struct Formula{
 
     /** @brief Quantifier formula representation */
     struct Quantifier{
-        std::string var;  ///< The identifier (name of the variable) this quantifier binds to
+        std::string var;  ///< The identifier(var name) this quantifier binds to
         Formula* arg;     ///< The formula being quantified over
     };
     ///@}
-    // Internal Representation =========================================================================================
+    // Internal Representation =================================================
     /** @name Internal Representation */
     ///@{
 
@@ -112,7 +123,7 @@ struct Formula{
     };
 
     ///@}
-    // Methods =========================================================================================
+    // Methods =================================================================
     /** @name Constructors, Destructors, operators */
     ///@{
     
@@ -132,75 +143,93 @@ struct Formula{
     ///@{
 
     /** 
-     * @brief Gets a list of pointers to immediate subformulae in left to right order.
-     * @example if the formula is `A /\ (B \/ C)` then `.subformulae()` returns a list of pointers
-     * to `A` and `(B \/ C)` respectively.
+     * @brief Gets a list of pointers to immediate subformulae 
+     * in left to right order.
+     * @example if the formula is `A /\ (B \/ C)` then `.subformulae()`
+     * returns a list of pointers to `A` and `(B \/ C)` respectively.
      * @return A vector of Formula* containing immediate subformulae
     */
     FormulaList subformulae() const;
 
     /**
-     * @brief Gets all subformulae in the entire tree excluding the formulae itself. 
-     * The vector returned is guaranteed to have the values in breath first traversal order. 
-     * @example if the formula is `A /\ (B \/ ~C)` then `.allSubformulae()` will return
-     * pointers to `[A, (B \/ ~C), B, ~C, C]` in that order.
-     * @return A list of Formula* of all subformulae encountered in BFS traversal order of the formula tree. 
+     * @brief Gets all subformulae in the entire tree excluding the
+     * formulae itself. The vector returned is guaranteed to have the
+     * values in breath first traversal order. 
+     * @example if the formula is `A /\ (B \/ ~C)` then `.allSubformulae()` 
+     * will return pointers to `[A, (B \/ ~C), B, ~C, C]` in that order.
+     * @return A list of Formula* of all subformulae encountered in BFS
+     * traversal order of the formula tree. 
     */
     FormulaList allSubformulae() const;
 
     /**
-     * @brief Gets all subformulae in the entire tree including the formulae itself. 
-     * The vector returned is guaranteed to have the values in breath first traversal order. 
-     * @example if the formula is `A /\ (B \/ ~C)` then `.allFormulae()` will return
-     * pointers to `[A /\ (B \/ ~C), A, (B \/ ~C), B, ~C, C]` in that order.
-     * @return A list of Formula* of all subformulae encountered in BFS traversal order of the formula tree. 
+     * @brief Gets all subformulae in the entire tree including 
+     * the formulae itself. The vector returned is guaranteed to have
+     * the values in breath first traversal order. 
+     * @example if the formula is `A /\ (B \/ ~C)` then `.allFormulae()`
+     * will return pointers to `[A /\ (B \/ ~C), A, (B \/ ~C), B, ~C, C]`
+     * in that order.
+     * @return A list of Formula* of all subformulae encountered 
+     * in BFS traversal order of the formula tree. 
     */
     FormulaList allFormulae() const;
 
     /**
-     * @brief Gets a list of all predicates in the order they appear in the formula via an in-order traversal
-     * of the formula tree. 
-     * @example if the formula is `A /\ (B(a, d) \/ ~C(d))` then `.allPredicates()` returns a list of formula
-     * pointers to `[A, B(a, d), C(d)]` in that order.
-     * @return a list of Formula* to propositions in the formula in the order they appear 
+     * @brief Gets a list of all predicates in the order they appear in 
+     * the formula via an in-order traversal of the formula tree. 
+     * @example if the formula is `A /\ (B(a, d) \/ ~C(d))` then 
+     * `.allPredicates()` returns a list of formula pointers to 
+     * `[A, B(a, d), C(d)]` in that order.
+     * @return a list of Formula* to propositions in the formula in
+     * the order they appear 
     */
     FormulaList allPredicates() const;
 
     /**
-     * @brief Gets a list of pointers to all term level constants (including constant variables) in the formula
-     * @example if the formula is `A /\ (B(a, d) \/ ~C(d))` then `.allConstants()` returns a list of terms
-     * pointers to `[a, d, d]` in that order.
+     * @brief Gets a list of pointers to all term level constants 
+     * (including constant variables) in the formula.
+     * @example if the formula is `A /\ (B(a, d) \/ ~C(d))` then 
+     * `.allConstants()` returns a list of terms pointers to `[a, d, d]`
+     * in that order.
     */
     TermList allConstants() const;
 
     /**
-     * @brief Gets a list of pointer to all term level functions (including function variables) in the formula
-     * @example if the formula is `A /\ (B(a, f(d)) \/ ~C(S(S(a))))` then `.allFunctions()` returns a list of terms
-     * pointers to `[f, S, S]` in that order.
+     * @brief Gets a list of pointer to all term level functions 
+     * (including function variables) in the formula
+     * @example if the formula is `A /\ (B(a, f(d)) \/ ~C(S(S(a))))`
+     * then `.allFunctions()` returns a list of terms pointers to
+     * `[f, S, S]` in that order.
     */
     TermList allFunctions() const;
 
     /**
-     * @brief Gets a list of all subformulae that are quantified at the top level
+     * @brief Gets a list of all subformulae that are quantified at
+     * the top level
     */
     FormulaList allQuantified() const;
 
     /**
-     * @brief gets the list of all propositional variables occurring inside the formula.
-     * @details ordered in the order they appear in the formula via an in-order traversal of the formula tree. 
+     * @brief gets the list of all propositional variables occurring inside
+     * the formula.
+     * @details ordered in the order they appear in the formula via an
+     * in-order traversal of the formula tree. 
      * @example `A /\ (B(a, d) \/ ~C)` returns a list of formula pointers to 
      * `[A, C]` in that order.
     */
     FormulaList allPropositions() const;
 
     /**
-     * @brief Gets a list of pairs of pointers to term variables and the quantifier formula they are bound to.
-     * @example if formula is `Ex: P(x) /\ Ay: Q(x, y)` then `.boundTermVariables()` returns 
+     * @brief Gets a list of pairs of pointers to term variables and the
+     * quantifier formula they are bound to.
+     * @example if formula is `Ex: P(x) /\ Ay: Q(x, y)` then 
+     * `.boundTermVariables()` returns 
      * `[(pointer to x term in P(x), pointer to quantifier Ex formula), 
      *   (pointer to x term in Q(x,y), pointer to quantifier Ex formula), 
      *   (pointer to y term in Q(x,y), pointer to quantifier Ay formula)]`
-     * @example edge case, inner quantifier binds more strongly if shared variable names 
-     * if formula is `Ex: P(x) /\ Ax: Q(x, x)` then `.boundTermVariables()` returns 
+     * @example edge case, inner quantifier binds more strongly if shared 
+     * variable names if formula is `Ex: P(x) /\ Ax: Q(x, x)` then 
+     * `.boundTermVariables()` returns 
      * `[(pointer to x term in P(x), pointer to quantifier Ex formula), 
      *   (pointer to 1st x term in Q(x,x), pointer to quantifier Ex formula), 
      *   (pointer to 2nd x term in Q(x,x), pointer to quantifier Ax formula)]`
@@ -208,12 +237,14 @@ struct Formula{
     std::list<std::pair<Term*, Formula*>> boundTermVariables() const;
 
     /**
-     * @brief Gets a list of pairs of pointers to function variables and the quantifier formula they are bound to.
+     * @brief Gets a list of pairs of pointers to function variables and 
+     * the quantifier formula they are bound to.
     */
     std::list<std::pair<Term*, Formula*>> boundFunctionVariables() const;
 
     /**
-     * @brief Gets a list of pairs of pointers to predicate variables and the quantifier formula they are bound to.
+     * @brief Gets a list of pairs of pointers to predicate variables and
+     * the quantifier formula they are bound to.
     */
     std::list<std::pair<Formula*, Formula*>> boundPredicateVariables() const;
 
@@ -232,19 +263,19 @@ struct Formula{
     ///@{
     
     /**
-     * @brief gets the depth/height of the formula tree.
      * @return the height of the formula tree.
     */
     size_t depth() const;
     
     /**
-     * @brief gets the depth/height of the formula tree, including height of term trees on leaves.
-     * @return The depth/height of the formula tree, including height of term trees on leaves.
+     * @return The depth/height of the formula tree, including height
+     * of term trees on leaves.
     */
     size_t depthWithTerms() const;
 
     /**
-     * @brief true iff the formula is a proposition, that is, a predicate with 0 arguments.
+     * @return true iff the formula is a proposition, that is,
+     * a predicate with 0 arguments.
     */
     bool isProposition() const;
 
@@ -286,7 +317,7 @@ struct Formula{
     //@}
 };
 
-// Construction Helpers ================================================================================================
+// Construction Helpers ========================================================
 
 Formula* Prop(std::string name);
 Formula* Pred(std::string name, TermList args);

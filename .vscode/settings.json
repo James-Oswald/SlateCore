@@ -5,6 +5,7 @@
         "Forall",
         "idents",
         "rapidjson",
+        "reper",
         "Sexpression",
         "Subconstants",
         "Subformula",
