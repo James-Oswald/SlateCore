@@ -29,7 +29,13 @@ target_sources(SlateCore PRIVATE
     src/Term.cpp
     src/verify.cpp
     src/ProofGraph.cpp
-    src/ProofGraphSchema.cpp
+)
+
+#Copy our resources to the build directory
+add_custom_command(TARGET SlateCore POST_BUILD 
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/res
+    ${CMAKE_CURRENT_BINARY_DIR}/res
 )
 
 enable_testing()
